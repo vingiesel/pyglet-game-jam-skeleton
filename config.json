@@ -1,6 +1,6 @@
 {
-    "res_x": 800,
-    "res_y": 600,
-    "virtual_res_x": 800,
-    "virtual_res_y": 600
+    "res_x": 640,
+    "res_y": 480,
+    "virtual_res_x": 640,
+    "virtual_res_y": 480
 }

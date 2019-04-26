@@ -1,8 +1,9 @@
 class BaseScene:
-    def __init__(self):
+    def __init__(self, manager):
         self.running = True
+        self.manager = manager
 
-    def start(self, context=None, manager=None):
+    def start(self, context=None):
         pass
 
     def end(self):

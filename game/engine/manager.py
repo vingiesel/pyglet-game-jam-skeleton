@@ -1,4 +1,4 @@
-import pyglet
+import pyglet, os
 from pyglet.gl import *
 
 from game import scenes
@@ -14,12 +14,25 @@ class GameWindow(pyglet.window.Window):
             caption='Game',
             resizable=False)
         self.stack = []
+        self.data = {}
         pyglet.clock.schedule_interval(self.tick, 1 / 60.0)
+
+        
+        glEnable(GL_TEXTURE_2D)
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        glShadeModel(GL_SMOOTH)
+        glClearDepth(1.0)
+        glEnable(GL_DEPTH_TEST)
+        glDepthFunc(GL_LEQUAL)
+        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST)
+        glEnable(GL_ALPHA_TEST)
+
 
     def change_scene(self, scene, context=None):
         self._remove_current_scene()
 
-        scene = scene()
+        scene = scene(manager=self)
         self.stack = [scene]
         scene.start(context)
 
@@ -27,7 +40,7 @@ class GameWindow(pyglet.window.Window):
         current_scene = self.stack[0]
         current_scene.pause()
 
-        scene = scene()
+        scene = scene(manager=self)
         self.stack.append(scene)
         scene.start(context)
 
@@ -56,6 +69,21 @@ class GameWindow(pyglet.window.Window):
                 
         if not self.stack:
             pyglet.app.exit()
+
+
+    # data management
+    def load_data_bundle(self, name, structure):
+        data = {'images': {}, 'sounds': {}}
+        for image_name, image_path in structure.get('images', []).items():
+            image_path = os.path.join('assets', image_path)
+            image = pyglet.image.load(image_path, decoder=pyglet.image.codecs.png.PNGImageDecoder())
+            data['images'][image_name] = image
+
+        self.data[name] = data
+
+
+    def unload_data_bundle(self, name):
+        pass
 
     def run(self):
         pyglet.app.run()
